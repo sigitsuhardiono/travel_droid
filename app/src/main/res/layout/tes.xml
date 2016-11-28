@@ -1,28 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-    <ScrollView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-        android:id="@+id/scrollView"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:radius="10dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-        <EditText android:id="@+id/cari_kota_travel"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@drawable/form_border_rounded_corner"
-            android:hint="Cari kota.."
-            android:inputType="text"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    </ScrollView>
+<!-- in a real application you should use styles and dimens... -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</ScrollView>

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.InputStream;
 
@@ -21,6 +22,11 @@ public class ProfilActivity extends AppCompatActivity {
         dtpref = new Preference(getApplicationContext());
         new DownloadImageTask((ImageView)findViewById(R.id.profile_image))
                 .execute("http://agen.travelmalang.co.id/img/logo-agen/"+dtpref.getUserDetails().get("logo"));
+        TextView nama_user = (TextView)findViewById(R.id.user_profile_name);
+        nama_user.setText(dtpref.getUserDetails().get("nama"));
+
+        TextView email_user = (TextView)findViewById(R.id.user_profile_email);
+        email_user.setText(dtpref.getUserDetails().get("email"));
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

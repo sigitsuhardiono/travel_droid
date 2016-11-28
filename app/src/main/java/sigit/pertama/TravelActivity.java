@@ -3,6 +3,7 @@ package sigit.pertama;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.List;
 
@@ -34,11 +37,15 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
     private int day;
     private int month;
     private int year;
+    private int hour;
+    private int minutes;
     private String id_kota_asal;
     private String id_kota_tujuan;
+    private String auth;
     private EditText input_kota_asal_travel;
     private EditText input_kota_tujuan_travel;
     private EditText input_tgl_travel;
+    private EditText input_jam_travel;
     private ListView lv;
     KotaAdapter adapter;
     EditText inputSearch;
@@ -49,17 +56,28 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel);
-
+        dtpref = new Preference(getApplicationContext());
+        auth = dtpref.getUserDetails().get("auth");
         cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
         month = cal.get(Calendar.MONTH);
         year = cal.get(Calendar.YEAR);
+        hour = cal.get(Calendar.HOUR_OF_DAY);
+        minutes = cal.get(Calendar.MINUTE);
         input_tgl_travel = (EditText)findViewById(R.id.input_tgl_travel);
         input_tgl_travel.setText(day+"/"+month+"/"+year);
         input_tgl_travel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DateDialog();
+            }
+        });
+        input_jam_travel = (EditText)findViewById(R.id.jam_trv_berangkat) ;
+        input_jam_travel.setText(hour+":"+minutes);
+        input_jam_travel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimeDialog();
             }
         });
         input_kota_asal_travel = (EditText)findViewById(R.id.input_kota_asal_travel);
@@ -69,7 +87,6 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
                 CityDialog("asal");
             }
         });
-
         input_kota_tujuan_travel = (EditText)findViewById(R.id.input_kota_tujuan_travel);
         input_kota_tujuan_travel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +95,7 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
             }
         });
     }
+
     public void DateDialog(){
         DatePickerDialog.OnDateSetListener listener=new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -89,9 +107,18 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
         dpDialog.show();
     }
 
+    public void TimeDialog(){
+        TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener(){
+            @Override
+            public  void onTimeSet(TimePicker view, int selectedHour, int selectedMinute){
+                input_jam_travel.setText(selectedHour+":"+selectedMinute);
+            }
+        };
+        TimePickerDialog tpDialog = new TimePickerDialog(this,listener,hour,minutes,true);
+        tpDialog.show();
+    }
+
     public void CityDialog(String tipe) {
-        dtpref = new Preference(getApplicationContext());
-        String auth = dtpref.getUserDetails().get("auth");
         presenter = new TravelPresenterImp(this);
         if(tipe == "asal"){
             presenter.getKotaAsal(auth);
