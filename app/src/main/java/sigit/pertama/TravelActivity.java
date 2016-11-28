@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import adapter.KotaAdapter;
-import me.anwarshahriar.calligrapher.Calligrapher;
 import model.kota_asal.Datum;
 import preference.Preference;
 import presenter.TravelPresenter;
@@ -50,8 +49,6 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travel);
-        Calligrapher calligrapher = new Calligrapher(this);
-        calligrapher.setFont(this, "fonts/OpenSans-Regular.ttf", true);
 
         cal = Calendar.getInstance();
         day = cal.get(Calendar.DAY_OF_MONTH);
