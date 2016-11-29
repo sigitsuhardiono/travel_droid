@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,6 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -42,16 +45,24 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
     private String id_kota_asal;
     private String id_kota_tujuan;
     private String auth;
+    private String kota_asal;
+    private String kota_tujuan;
+    private String tanggal_berangkat;
+    private String jam_berangkat;
+    private String jml_penumpang;
+
     private EditText input_kota_asal_travel;
     private EditText input_kota_tujuan_travel;
     private EditText input_tgl_travel;
     private EditText input_jam_travel;
+    private EditText input_jml_penumpang;
     private ListView lv;
     KotaAdapter adapter;
     EditText inputSearch;
     TravelPresenter presenter;
     Preference dtpref;
     ProgressDialog loading;
+    Button cari_jadwal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +103,29 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
             @Override
             public void onClick(View v) {
                 CityDialog("tujuan");
+            }
+        });
+        cari_jadwal = (Button)findViewById(R.id.btn_cari_jadwal);
+        cari_jadwal.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                input_tgl_travel = (EditText)findViewById(R.id.input_tgl_travel);
+                input_jam_travel = (EditText)findViewById(R.id.jam_trv_berangkat);
+                input_jml_penumpang = (EditText)findViewById(R.id.jml_travel_berangkat);
+                tanggal_berangkat = input_tgl_travel.getText().toString();
+                jam_berangkat = input_jam_travel.getText().toString();
+                jml_penumpang = input_jml_penumpang.getText().toString();
+//                Toast.makeText(getApplicationContext(),"ini form travel "+kota_asal+"-"+kota_tujuan+"-"+tanggal_berangkat+"-"+jam_berangkat+"-"+jml_penumpang,Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(),JadwalTravelActivity.class);
+                ArrayList<String> var_jadwal = new ArrayList<String>();
+                var_jadwal.add(0,kota_asal);
+                var_jadwal.add(1,kota_tujuan);
+                var_jadwal.add(2,tanggal_berangkat);
+                var_jadwal.add(3,jam_berangkat);
+                var_jadwal.add(4,jml_penumpang);
+                i.putStringArrayListExtra("var_jadwal",var_jadwal);
+                startActivity(i);
+                finish();
             }
         });
     }
@@ -138,7 +172,7 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
         loading = ProgressDialog.show(this, "Mengambil Data","Silakan tunggu..",false,false);
     }
     @Override
-    public void tampilKota(List<Datum> kota_asal, final String tipe){
+    public void tampilKota(List<Datum> kota, final String tipe){
         loading.dismiss();
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -146,7 +180,7 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
         View post = inflater.inflate(R.layout.auto_kota_travel, null);
         lv = (ListView)post.findViewById(R.id.list_view);
         inputSearch = (EditText)post.findViewById(R.id.cari_kota_travel);
-        adapter = new KotaAdapter(this, R.layout.list_kota, kota_asal);;
+        adapter = new KotaAdapter(this, R.layout.list_kota, kota);;
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -155,11 +189,13 @@ public class TravelActivity extends AppCompatActivity implements TravelView{
                 dialog.dismiss();
                 if(tipe == "asal"){
                     id_kota_asal = adapter.getItem(position).getId();
+                    kota_asal = adapter.getItem(position).getNama();
                     input_kota_asal_travel = (EditText)findViewById(R.id.input_kota_asal_travel);
                     input_kota_asal_travel.setText(adapter.getItem(position).getNama());
                 }
                 else{
                     id_kota_tujuan = adapter.getItem(position).getId();
+                    kota_tujuan = adapter.getItem(position).getNama();
                     input_kota_tujuan_travel = (EditText)findViewById(R.id.input_kota_tujuan_travel);
                     input_kota_tujuan_travel.setText(adapter.getItem(position).getNama());
                 }
